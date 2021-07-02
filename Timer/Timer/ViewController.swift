@@ -28,7 +28,7 @@ class ViewController: UIViewController {
         timeLabel.text = "Time: \(counter)"
         counter-=1
         if (counter == 0) {
-            
+            timer.invalidate()
             timeLabel.text = "Time's Over!"
         }
     }

@@ -20,7 +20,7 @@ class ViewController: UIViewController {
         counter = 10
         timeLabel.text = "Time: \(counter)"
         
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerFunction), userInfo: nil, repeats: false)
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerFunction), userInfo: nil, repeats: true)
         
     }
     

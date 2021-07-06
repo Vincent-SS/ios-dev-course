@@ -26,6 +26,7 @@ class ViewController: UIViewController {
     var timer = Timer()
     var counter = 0
     var score = 0
+    var highScore = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +34,17 @@ class ViewController: UIViewController {
         counter = 15
         countDownLabel.text = "\(counter)"
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerFunction), userInfo: nil, repeats: true)
+        // High Score check
+        let highScoreStored = UserDefaults.standard.object(forKey: "highScore")
+        if highScoreStored == nil {
+            highScore = 0
+            highestScoreLabel.text = "Highest Score: \(highScore)"
+        } else {
+            let newScore = highScoreStored as! Int
+            highScore = newScore
+            highestScoreLabel.text = "Highest Score: \(highScore)"
+        }
+        
         
         kenny0.isUserInteractionEnabled = true
         kenny1.isUserInteractionEnabled = true
@@ -63,7 +75,6 @@ class ViewController: UIViewController {
         kenny6.addGestureRecognizer(recognizer6)
         kenny7.addGestureRecognizer(recognizer7)
         kenny8.addGestureRecognizer(recognizer8)
-        
     }
     
     @objc func increaseScore() {
@@ -75,6 +86,12 @@ class ViewController: UIViewController {
         countDownLabel.text = "\(counter)"
         counter-=1
         if (counter == 0) {
+            // Check if it's the highest score
+            if (self.score > self.highScore) {
+                self.highScore = self.score
+                highestScoreLabel.text = "Highest Score: \(self.highScore)"
+                UserDefaults.standard.set(self.highScore, forKey: "highScore")
+            }
             timer.invalidate()
             countDownLabel.text = "Game Over"
             hideAllKenny()
@@ -82,7 +99,13 @@ class ViewController: UIViewController {
             let okButton = UIAlertAction(title: "No", style: UIAlertAction.Style.cancel, handler: nil)
             let replayButton = UIAlertAction(title: "Replay", style: UIAlertAction.Style.default) {
                 (UIAlertAction) in
+                self.score = 0
+                self.scoreLabel.text = "Score: \(self.score)"
+                self.counter = 15
+                self.countDownLabel.text = "\(self.counter)"
                 
+                self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.timerFunction), userInfo: nil, repeats: true)
+
             }
             alert.addAction(okButton)
             alert.addAction(replayButton)
@@ -95,22 +118,17 @@ class ViewController: UIViewController {
     }
     
     func hideAllKenny() {
-        
+        var kennies = [] as [UIImageView]
+        kennies = [kenny0, kenny1, kenny2, kenny3, kenny4, kenny5, kenny6, kenny7, kenny8]
+        for i in 0...8 {
+            kennies[i].isHidden = true
+        }
     }
     
     func showOneKenny() {
         let randomNumber = Int.random(in: 0...8)
         var kennies = [] as [UIImageView]
-        kennies.append(kenny0)
-        kennies.append(kenny1)
-        kennies.append(kenny2)
-        kennies.append(kenny3)
-        kennies.append(kenny4)
-        kennies.append(kenny5)
-        kennies.append(kenny6)
-        kennies.append(kenny7)
-        kennies.append(kenny8)
-        
+        kennies = [kenny0, kenny1, kenny2, kenny3, kenny4, kenny5, kenny6, kenny7, kenny8]
         for i in 0...8 {
             if (i == randomNumber) {
                 kennies[i].isHidden = false
@@ -119,8 +137,5 @@ class ViewController: UIViewController {
             }
         }
     }
-    
-
-
 }
 
